@@ -1,4 +1,5 @@
 import path from 'node:path'
+import util from 'node:util'
 import { format, transports, createLogger } from 'winston'
 import { app, ipcMain } from 'electron'
 
@@ -84,25 +85,26 @@ export class Logger {
     this.renderLogger = this.logger.child({ pid: 'renderer' })
     const channel = `__electron_winston_${name || 'log'}_handler__`
     if (!ipcMain.eventNames().some((e) => e === channel)) {
-      ipcMain.on(channel, (_, level: string, message: string) => {
+      ipcMain.on(channel, (_, level: string, ...args: any[]) => {
+        const message = util.format(...args)
         this.renderLogger?.log(level, message)
       })
     }
   }
 
-  info(message: any): void {
-    this.logger.info(message)
+  info(...args: any[]): void {
+    this.logger.info(util.format(...args))
   }
 
-  error(message: any): void {
-    if (message instanceof Error) {
-      this.logger.error(`${message.stack}`)
+  error(...args: any[]): void {
+    if (args.length === 1 && args[0] instanceof Error) {
+      this.logger.error(`${args[0].stack}`)
     } else {
-      this.logger.error(message)
+      this.logger.error(util.format(...args))
     }
   }
 
-  warn(message: any): void {
-    this.logger.warn(message)
+  warn(...args: any[]): void {
+    this.logger.warn(util.format(...args))
   }
 }

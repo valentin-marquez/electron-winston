@@ -12,20 +12,20 @@ class Logger {
       (globalThis || window).electron
   }
 
-  info(message: any): void {
-    this.api.ipcRenderer.send(this.channel, 'info', message)
+  info(...args: any[]): void {
+    this.api.ipcRenderer.send(this.channel, 'info', ...args)
   }
 
-  error(message: any): void {
-    if (message instanceof Error) {
-      this.api.ipcRenderer.send(this.channel, 'error', `${message.stack}`)
+  error(...args: any[]): void {
+    if (args.length === 1 && args[0] instanceof Error) {
+      this.api.ipcRenderer.send(this.channel, 'error', `${args[0].stack}`)
     } else {
-      this.api.ipcRenderer.send(this.channel, 'error', message)
+      this.api.ipcRenderer.send(this.channel, 'error', ...args)
     }
   }
 
-  warn(message: any): void {
-    this.api.ipcRenderer.send(this.channel, 'warn', message)
+  warn(...args: any[]): void {
+    this.api.ipcRenderer.send(this.channel, 'warn', ...args)
   }
 }
 
