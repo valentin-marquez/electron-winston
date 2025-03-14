@@ -1,6 +1,6 @@
 {
   "name": "electron-winston",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Simple logger for Electron app based on Winston.",
   "main": "./dist/main.cjs",
   "module": "./dist/main.mjs",
